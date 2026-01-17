@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import StoreCard from '@/components/StoreCard';
+import { trackEvent, AnalyticsEventType } from '@/lib/analytics';
 
 interface DirectoryGridProps {
     initialStores: any[];
@@ -14,12 +15,22 @@ export default function DirectoryGrid({ initialStores }: DirectoryGridProps) {
     // Extract unique categories
     const categories = ['All', ...Array.from(new Set(initialStores.map((s) => s.category)))];
 
-    // Client-side filtering
+    // Perform client-side filtering
     const filteredStores = initialStores.filter((store) => {
         const matchesSearch = store.name.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesCategory = selectedCategory === 'All' || store.category === selectedCategory;
         return matchesSearch && matchesCategory;
     });
+
+    // Track search queries (Debounced)
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (searchQuery.length > 2) {
+                trackEvent(AnalyticsEventType.SEARCH_QUERY, undefined, { query: searchQuery });
+            }
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     return (
         <div>
@@ -50,8 +61,8 @@ export default function DirectoryGrid({ initialStores }: DirectoryGridProps) {
                                 key={cat as string}
                                 onClick={() => setSelectedCategory(cat as string)}
                                 className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${selectedCategory === cat
-                                        ? 'bg-black text-white'
-                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    ? 'bg-black text-white'
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                     }`}
                             >
                                 {cat as React.ReactNode}

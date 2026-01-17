@@ -1,6 +1,8 @@
 import { fetchAPI } from '@/lib/api';
 import Image from 'next/image';
 import Link from 'next/link';
+import AnalyticsTracker from '@/components/AnalyticsTracker';
+import { AnalyticsEventType } from '@/lib/analytics';
 
 interface Props {
     params: { id: string };
@@ -22,6 +24,11 @@ export default async function EventDetailPage({ params }: Props) {
 
     return (
         <div className="min-h-screen bg-white">
+            <AnalyticsTracker
+                eventType={AnalyticsEventType.EVENT_VIEW}
+                entityId={event._id}
+                metadata={{ title: event.title }}
+            />
             {/* Immersive Hero */}
             <div className="relative h-[50vh] w-full">
                 <div className="absolute inset-0 bg-gray-900" />

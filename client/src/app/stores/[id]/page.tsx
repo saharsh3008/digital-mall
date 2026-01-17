@@ -1,6 +1,8 @@
 import { fetchAPI } from '@/lib/api';
 import Image from 'next/image';
 import Link from 'next/link';
+import AnalyticsTracker from '@/components/AnalyticsTracker';
+import { AnalyticsEventType } from '@/lib/analytics';
 
 interface Props {
     params: { id: string };
@@ -35,6 +37,13 @@ export default async function StoreDetailPage({ params }: Props) {
 
     return (
         <div className="min-h-screen bg-white">
+            {/* Tracking */}
+            <AnalyticsTracker
+                eventType={AnalyticsEventType.STORE_VIEW}
+                entityId={store._id}
+                metadata={{ name: store.name, category: store.category }}
+            />
+
             {/* Hero Banner */}
             <div className="relative h-[40vh] bg-gray-900">
                 {store.heroImageUrl && (
