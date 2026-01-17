@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/User';
 import Store from '../models/Store';
 import Event from '../models/Event';
+import Offer from '../models/Offer';
 import { catchAsync } from '../utils/catchAsync';
 
 const users = [
@@ -133,7 +134,7 @@ export const seedDatabase = catchAsync(async (req: Request, res: Response) => {
         },
         logoUrl: `https://ui-avatars.com/api/?name=${store.name}&background=random`
     }));
-    await Store.create(storesWithData);
+    const createdStores = await Store.create(storesWithData);
 
     // 3. Create Events
     const eventsWithDates = events.map(evt => {
@@ -154,13 +155,55 @@ export const seedDatabase = catchAsync(async (req: Request, res: Response) => {
     });
     await Event.create(eventsWithDates);
 
+    // 4. Create Offers (New!)
+    console.log('Creating offers...');
+    // Pick random stores for offers
+    const nike = createdStores.find(s => s.name === 'Nike');
+    const starbucks = createdStores.find(s => s.name === 'Starbucks Reserve');
+    const sephora = createdStores.find(s => s.name === 'Sephora');
+    const hnm = createdStores.find(s => s.name === 'H&M');
+
+    const offers = [
+        {
+            title: 'Flat 50% Off Running Shoes',
+            storeId: nike?._id,
+            code: 'RUN50',
+            description: 'Get half price on all Zoom series running shoes.',
+            validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // +7 days
+        },
+        {
+            title: 'Buy 1 Get 1 Free Coffee',
+            storeId: starbucks?._id,
+            code: 'BOGOJAVA',
+            description: 'Valid on all Grande sized beverages.',
+            validUntil: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // +2 days
+        },
+        {
+            title: 'Free Makeover Session',
+            storeId: sephora?._id,
+            code: 'GLAMUP',
+            description: 'Book a free 15-min makeover with any purchase.',
+            validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // +30 days
+        },
+        {
+            title: 'Seasonal Clearance Sale',
+            storeId: hnm?._id,
+            code: 'SUMMER30',
+            description: 'Extra 30% off on clearance items.',
+            validUntil: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000) // +5 days
+        }
+    ].filter(o => o.storeId); // Safety check
+
+    await Offer.create(offers);
+
     res.status(200).json({
         success: true,
         message: 'Database seeded successfully',
         stats: {
             users: createdUsers.length,
-            stores: stores.length,
-            events: events.length
+            stores: createdStores.length,
+            events: events.length,
+            offers: offers.length
         }
     });
 });

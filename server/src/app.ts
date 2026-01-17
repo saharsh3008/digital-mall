@@ -22,6 +22,7 @@ import authRoutes from './routes/auth.routes';
 import adminRoutes from './routes/admin.routes';
 import analyticsRoutes from './routes/analytics.routes';
 import systemRoutes from './routes/system.routes';
+import offerRoutes from './routes/offer.routes';
 
 // Mount Routers
 app.use('/api/v1/admin', adminRoutes);
@@ -30,6 +31,7 @@ app.use('/api/v1/stores', storeRoutes);
 app.use('/api/v1/events', eventRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/system', systemRoutes);
+app.use('/api/v1/offers', offerRoutes);
 
 // Routes
 app.get('/health', (req: Request, res: Response) => {

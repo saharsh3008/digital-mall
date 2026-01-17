@@ -43,7 +43,6 @@ export default async function Home() {
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center bg-gray-900 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-40">
-          {/* Placeholder for actual hero image */}
           <div className="w-full h-full bg-gradient-to-r from-purple-800 to-blue-900" />
         </div>
 
@@ -82,7 +81,7 @@ export default async function Home() {
             stores.map((store: Store) => (
               <Link key={store._id} href={`/stores/${store._id}`} className="group block">
                 <div className="relative h-64 rounded-2xl overflow-hidden mb-4 shadow-sm group-hover:shadow-md transition-all">
-                  <div className="absolute inset-0 bg-gray-200 animate-pulse" /> {/* Placeholder */}
+                  <div className="absolute inset-0 bg-gray-200 animate-pulse" />
                   {store.heroImageUrl && (
                     <Image
                       src={store.heroImageUrl}
@@ -111,6 +110,21 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Flash Sales Teaser */}
+      <section className="py-16 bg-gradient-to-br from-blue-600 to-purple-700 text-white overflow-hidden relative">
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+        <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="text-center md:text-left">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Don't Miss Out!</h2>
+            <p className="text-blue-100 text-lg max-w-md">Exclusive flash deals from brands like Nike, Sephora, and Starbucks are live now.</p>
+          </div>
+          <Link href="/offers" className="px-8 py-4 bg-white text-blue-600 font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-transform flex items-center gap-2">
+            <span>View All 4 Deals</span>
+            <span>→</span>
+          </Link>
+        </div>
+      </section>
+
       {/* Upcoming Events */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 w-full">
@@ -120,7 +134,6 @@ export default async function Home() {
             {events.map((event: Event) => (
               <div key={event._id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 items-center">
                 <div className="w-full md:w-1/3 aspect-square bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 font-bold text-2xl">
-                  {/* Date Badge */}
                   {new Date(event.startDate).getDate()}
                   <span className="text-sm font-normal ml-1">
                     {new Date(event.startDate).toLocaleString('default', { month: 'short' })}

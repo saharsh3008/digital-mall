@@ -20,6 +20,9 @@ export default function Navbar() {
                         <Link href="/map" className="text-gray-600 hover:text-gray-900 transition-colors">
                             Map
                         </Link>
+                        <Link href="/offers" className="text-red-500 font-medium hover:text-red-600 transition-colors">
+                            🔥 Offers
+                        </Link>
                         <Link href="/events" className="text-gray-600 hover:text-gray-900 transition-colors">
                             Events
                         </Link>
