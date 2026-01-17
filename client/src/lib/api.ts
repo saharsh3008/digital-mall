@@ -1,5 +1,10 @@
 export const getBaseUrl = () => {
-    let url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+    // Default to Render in production if env var is missing (Emergency fallback)
+    const defaultUrl = process.env.NODE_ENV === 'production'
+        ? 'https://digital-mall-xdfh.onrender.com/api/v1'
+        : 'http://localhost:5000/api/v1';
+
+    let url = process.env.NEXT_PUBLIC_API_URL || defaultUrl;
 
     // 1. Remove trailing slash
     if (url.endsWith('/')) {
