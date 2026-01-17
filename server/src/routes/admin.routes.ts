@@ -11,12 +11,17 @@ import {
     updateEvent,
     deleteEvent
 } from '../controllers/admin.event.controller';
+import { getActivityOverTime, getTopSearches, getTopStores } from '../controllers/admin.analytics.controller';
 
 const router = express.Router();
 
-// Protect all routes
-router.use(protect);
-router.use(restrictTo('admin', 'infrastructure_admin'));
+// Apply auth middleware to all routes
+router.use(protect, restrictTo('admin'));
+
+// Analytics Dashboard
+router.get('/analytics/top-stores', getTopStores);
+router.get('/analytics/top-searches', getTopSearches);
+router.get('/analytics/activity', getActivityOverTime);
 
 // Store Mgmt
 router.route('/stores')
