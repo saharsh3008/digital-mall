@@ -8,7 +8,7 @@ import { catchAsync } from '../utils/catchAsync';
 const signToken = (id: string) => {
     const secret = process.env.JWT_SECRET as string;
     const options: jwt.SignOptions = {
-        expiresIn: process.env.JWT_EXPIRE || '30d',
+        expiresIn: (process.env.JWT_EXPIRE || '30d') as any,
     };
     return jwt.sign({ id }, secret, options);
 };
