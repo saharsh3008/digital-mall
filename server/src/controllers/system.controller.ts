@@ -98,11 +98,67 @@ export const seedDatabase = catchAsync(async (req: Request, res: Response) => {
     }
 
     const userCount = await User.countDocuments();
-    if (userCount > 0) {
-        return res.status(200).json({ message: 'Database already seeded. Operation skipped.' });
+    const offerCount = await Offer.countDocuments();
+
+    // Case 1: Full Seed (Empty DB)
+    if (userCount === 0) {
+        // ... allow fall through to full seed ...
+    }
+    // Case 2: Partial Seed (Stores exist, but Offers missing - common during dev)
+    else if (offerCount === 0) {
+        console.log('Users exist but Offers missing. Seeding Offers only...');
+        const stores = await Store.find();
+
+        // Pick stores using regex or loose matching since IDs might vary
+        const nike = stores.find(s => s.name.includes('Nike'));
+        const starbucks = stores.find(s => s.name.includes('Starbucks'));
+        const sephora = stores.find(s => s.name.includes('Sephora'));
+        const hnm = stores.find(s => s.name.includes('H&M'));
+
+        const offers = [
+            {
+                title: 'Flat 50% Off Running Shoes',
+                storeId: nike?._id,
+                code: 'RUN50',
+                description: 'Get half price on all Zoom series running shoes.',
+                validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            },
+            {
+                title: 'Buy 1 Get 1 Free Coffee',
+                storeId: starbucks?._id,
+                code: 'BOGOJAVA',
+                description: 'Valid on all Grande sized beverages.',
+                validUntil: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+            },
+            {
+                title: 'Free Makeover Session',
+                storeId: sephora?._id,
+                code: 'GLAMUP',
+                description: 'Book a free 15-min makeover with any purchase.',
+                validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+            },
+            {
+                title: 'Seasonal Clearance Sale',
+                storeId: hnm?._id,
+                code: 'SUMMER30',
+                description: 'Extra 30% off on clearance items.',
+                validUntil: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000)
+            }
+        ].filter(o => o.storeId);
+
+        await Offer.create(offers);
+        return res.status(200).json({
+            success: true,
+            message: 'Offers seeded successfully (appended to existing data)',
+            stats: { offers: offers.length }
+        });
+    }
+    // Case 3: Already Seeded
+    else {
+        return res.status(200).json({ message: 'Database already fully seeded. Operation skipped.' });
     }
 
-    // 1. Create Users
+    // 1. Create Users (Full Seed Logic)
     const hashedUsers = await Promise.all(users.map(async (u) => ({
         ...u,
         password: await bcrypt.hash(u.password, 10)
