@@ -6,9 +6,11 @@ import { AppError } from '../middlewares/error.middleware';
 import { catchAsync } from '../utils/catchAsync';
 
 const signToken = (id: string) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET as string, {
+    const secret = process.env.JWT_SECRET as string;
+    const options: jwt.SignOptions = {
         expiresIn: process.env.JWT_EXPIRE || '30d',
-    });
+    };
+    return jwt.sign({ id }, secret, options);
 };
 
 const createSendToken = (user: any, statusCode: number, res: Response) => {
