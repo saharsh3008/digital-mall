@@ -20,12 +20,14 @@ import storeRoutes from './routes/store.routes';
 import eventRoutes from './routes/event.routes';
 import authRoutes from './routes/auth.routes';
 import adminRoutes from './routes/admin.routes';
+import analyticsRoutes from './routes/analytics.routes';
 
 // Mount Routers
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/stores', storeRoutes);
 app.use('/api/v1/events', eventRoutes);
+app.use('/api/v1/analytics', analyticsRoutes);
 
 // Routes
 app.get('/health', (req: Request, res: Response) => {
